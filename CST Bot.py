@@ -3,18 +3,11 @@ import time
 from random import randint
 
 
-def b(num):
-    return chr(num)
-
-
-def a(char):
-    return ord(str(char))
-
-
 # TIME VARIABLES
 minute = 60
 hour = 60 * minute
 day = 24 * hour
+
 
 client = discord.Client()
 
