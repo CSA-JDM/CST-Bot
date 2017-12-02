@@ -2,6 +2,14 @@ import discord
 import time
 from random import randint
 
+import asyncio
+import unicodedata
+
+import json
+import os
+import requests
+
+from sys import modules
 
 # TIME VARIABLES
 minute = 60
@@ -71,7 +79,64 @@ async def on_message(msg):
             await client.send_message(msg.channel, allb)
         except ValueError:
             print("An error occurred; please try again. (Ex. !fibonacci 1)")
+    if (not msg.channel.is_private) and ((msg.embeds) or (msg.attachments)) and (not msg.channel.is_default):
+        name = str(msg.server.name)+'\\'+str(msg.channel.name)+'\\'+str(msg.author.name)
+        if msg.embeds:
+            for pic in msg.embeds:
+                thing = str(pic['url']).split('/')
+                try:
+                    await download_file(str(pic['url']), name, str(thing[-1].split('.')[0]), str(thing[-1].split('.')[-1]))
+                except:
+                    pass
+        elif msg.attachments:
+            for pic in msg.attachments:
+                thing = str(pic['url']).split('/')
+                try:
+                    await download_file(str(pic['url']), name, str(thing[-1].split('.')[-2]), str(thing[-1].split('.')[-1]))
+                except:
+                    pass
+        elif r_image.match(urls[0]):
+            for pic in urls:
+                thing = str(pic).split('/')
+                try:
+                    await download_file(str(pic), name, str(thing[-1].split('.')[-2]), str(thing[-1].split('.')[-1]))
+                except:
+                    pass
+        else:
+            print('ERROR!! |'+str(pic['url'])+'|'+name+'|'+str(thing[-1].split('.')[-2])+'|'+str(thing[-1].split('.')[-1]))
+    elif (msg.channel.is_private) and (msg.embeds or msg.attachments):
+        name = '@pms\\'+str(msg.channel.user)
+        if msg.embeds:
+            for pic in msg.embeds:
+                thing = str(pic['url']).split('/')
+                try:
+                    await download_file(str(pic['url']), name, str(thing[-1].split('.')[-2]), str(thing[-1].split('.')[-1]))
+                except:
+                    pass
+        elif msg.attachments:
+            for pic in msg.attachments:
+                thing = str(pic['url']).split('/')
+                try:
+                    await download_file(str(pic['url']), name, str(thing[-1].split('.')[-2]), str(thing[-1].split('.')[-1]))
+                except:
+                    pass
+        else:
+            print('ERROR!! |'+str(pic['url'])+'|'+name+'|'+str(thing[-1].split('.')[-2])+'|'+str(thing[-1].split('.')[-1]))
 
+
+async def download_file(url, path, file_name, file_type):
+    if file_type == 'exe' or file_name == 'js':
+        return
+    if not os.path.exists('.\\pictures\\'+path):
+        os.makedirs('.\\pictures\\'+path)
+    headers = {
+    'User-agent': 'Mozilla/5.0 (Windows NT 6.3; rv:36.0) Gecko/20100101 Firefox/36.0'
+    }
+    r = requests.get(url, headers=headers, stream=True)
+    with open('.\\pictures\\'+path+'\\'+str(file_name)+'.'+str(file_type), 'wb') as f:
+        for chunk in r.iter_content(chunk_size=1024):
+            if chunk:
+                f.write(chunk)
 
 def roll(msg):
     dcount = sum([1 for x in msg.content.lower()[6:] if x == 'd'])
