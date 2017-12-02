@@ -23,13 +23,15 @@ client = discord.Client()
 async def on_ready():
     global start
     start = time.time()
-    print("Username:", client.user.name + "\nID:", client.user.id, "\nOpened Since: " + time.asctime() + "\n")
+    print("Username: %s\nID: %s\nOpened Since: %s\n" % (client.user.name, client.user.id, time.asctime()))
 
 
 @client.event
 async def on_message(msg):
-    if msg.author.id == "118845112599052288" and msg.content.startswith("!calc"):
+    if msg.content.startswith("!calc"):
+        print(time.asctime() + ": " + msg.author.name + ": " + msg.content)
         result = eval(msg.content[6:])
+        print(str(result))
         await client.send_message(msg.channel, str(result))
     elif msg.content.startswith('!roll'):
         print(time.asctime() + ": " + msg.author.name + ": " + msg.content)
@@ -43,13 +45,13 @@ async def on_message(msg):
         upminute = int((uptime % hour) // minute)
         upsecond = int((uptime % minute) // 1)
         print("Live for " + ("{}:{}:{}:{} (d:h:m:s)".format(upday, uphour, upminute, upsecond) if uptime > day else (
-        "{}:{}:{} (h:m:s)".format(uphour, upminute, upsecond) if uptime > hour else (
-        "{}:{} (m:s)".format(upminute, upsecond) if uptime > minute else "{} seconds".format(upsecond)))) + "\n")
+            "{}:{}:{} (h:m:s)".format(uphour, upminute, upsecond) if uptime > hour else (
+                "{}:{} (m:s)".format(upminute, upsecond) if uptime > minute else "{} seconds\n".format(upsecond)))))
         await client.send_message(msg.channel, "live for " + (
-        "{}:{}:{}:{} (d:h:m:s)".format(upday, uphour, upminute, upsecond) if uptime > day else (
-        "{}:{}:{} (h:m:s)".format(uphour, upminute, upsecond) if uptime > hour else (
-        "{}:{} (m:s)".format(upminute, upsecond) if uptime > minute else "{} seconds".format(upsecond)))))
-    elif msg.content.startswith("!calc"):  ##### (ALL) CALC
+            "{}:{}:{}:{} (d:h:m:s)".format(upday, uphour, upminute, upsecond) if uptime > day else (
+                "{}:{}:{} (h:m:s)".format(uphour, upminute, upsecond) if uptime > hour else (
+                    "{}:{} (m:s)".format(upminute, upsecond) if uptime > minute else "{} seconds".format(upsecond)))))
+    elif msg.content.startswith("!calc"):
         expression = msg.content[6:].lower()
         print(str(msg.content))
         for x in expression:
@@ -65,18 +67,17 @@ async def on_message(msg):
             await client.send_message(msg.channel, "Well shoot")
     elif msg.content.startswith('!fibonacci'):
         print(time.asctime() + ": " + msg.author.name + ": " + msg.content)
-        if "100." in msg.content:
+        try:
+            tostop = int(msg.content[11:])
             a, b = 0, 1
-            while b < 100:
-                await client.send_message(msg.channel, b)
-                print(b)
+            allb = []
+            while b < tostop:
+                allb.append(b)
                 a, b = b, a + b
-        if "1000." in msg.content:
-            a, b = 0, 1
-            while b < 1000:
-                await client.send_message(msg.channel, b)
-                print(b)
-                a, b = b, a + b
+            print(allb)
+            await client.send_message(msg.channel, allb)
+        except ValueError:
+            print("An error occurred; please try again. (Ex. !fibonacci 1)")
 
 
 def roll(msg):
@@ -86,9 +87,9 @@ def roll(msg):
             splitted = msg.content.lower()[6:].split('d')
             if splitted[0] != '' and type(int(splitted[0])) is int and type(int(splitted[1])) is int:
                 roll = [randint(1, int(splitted[1])) for x in range(int(splitted[0]))]
-                return msg.author.name + ", rolling " + splitted[1] + " sided dice " + splitted[0] + (
-                " time: " if int(splitted[0]) == 1 else " times: ") + "\n" + str(sum(roll)) + " (" + '+'.join(
-                    [str(x) for x in roll]) + ")"
+                return msg.author.name + ", rolling " + splitted[1] + " sided dice " + splitted[0].rstrip() + (
+                    " time: " if int(splitted[0]) == 1 else " times: ") + "\n" + str(sum(roll)) + " (" + '+'.join(
+                        [str(x) for x in roll]) + ")"
             elif splitted[0] == '' and type(int(splitted[1])) is int:
                 return msg.author.name + ", rolling " + splitted[1] + " sided dice 1 time: " + str(
                     randint(1, int(splitted[1])))
