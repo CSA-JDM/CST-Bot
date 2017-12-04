@@ -31,9 +31,18 @@ async def on_ready():
 async def on_message(msg):
     if msg.content.startswith("!calc"):
         print(time.asctime() + ": " + msg.author.name + ": " + msg.content)
-        result = eval(msg.content[6:])
-        print(str(result))
-        await client.send_message(msg.channel, str(result))
+        expression = msg.content[6:].lower()
+        for x in expression:
+            if str(x) not in "0123456789abcdefintx+-=<>~^*/%&|()[].,\"' \r\n\x00":
+                await client.send_message(msg.channel,
+                                          "Characters allowed are 0123456789abcdefintx+-=<>~^*/%&|()[].,\"' and spaces")
+                return
+        try:
+            result = eval(expression)
+            print(str(result))
+            await client.send_message(msg.channel, str(result))
+        except:
+            await client.send_message(msg.channel, "Well shoot")
     elif msg.content.startswith('!roll'):
         print(time.asctime() + ": " + msg.author.name + ": " + msg.content)
         print(roll(msg) + "\n")
@@ -55,20 +64,6 @@ async def on_message(msg):
                 "{}:{}:{} (h:m:s)".format(uphour, upminute, upsecond) if uptime > hour else (
                     "{}:{} (m:s)".format(upminute, upsecond) if uptime > minute else (
                         "{} seconds".format(upsecond))))))
-    elif msg.content.startswith("!calc"):
-        expression = msg.content[6:].lower()
-        print(str(msg.content))
-        for x in expression:
-            if str(x) not in "0123456789abcdefintx+-=<>~^*/%&|()[].,\"' \r\n\x00":
-                await client.send_message(msg.channel,
-                                          "Characters allowed are 0123456789abcdefintx+-=<>~^*/%&|()[].,\"' and spaces")
-                return
-        try:
-            result = eval(expression)
-            print(result)
-            await client.send_message(msg.channel, str(result))
-        except:
-            await client.send_message(msg.channel, "Well shoot")
     elif msg.content.startswith('!fibonacci'):
         print(time.asctime() + ": " + msg.author.name + ": " + msg.content)
         try:
