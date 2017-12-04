@@ -45,13 +45,16 @@ async def on_message(msg):
         uphour = int((uptime % day) // hour)
         upminute = int((uptime % hour) // minute)
         upsecond = int((uptime % minute) // 1)
-        print("Live for " + ("{}:{}:{}:{} (d:h:m:s)".format(upday, uphour, upminute, upsecond) if uptime > day else (
-            "{}:{}:{} (h:m:s)".format(uphour, upminute, upsecond) if uptime > hour else (
-                "{}:{} (m:s)".format(upminute, upsecond) if uptime > minute else "{} seconds\n".format(upsecond)))))
+        print("Live for " + (
+            "{}:{}:{}:{} (d:h:m:s)".format(upday, uphour, upminute, upsecond) if uptime > day else (
+                "{}:{}:{} (h:m:s)".format(uphour, upminute, upsecond) if uptime > hour else (
+                    "{}:{} (m:s)".format(upminute, upsecond) if uptime > minute else (
+                        "{} seconds\n".format(upsecond))))))
         await client.send_message(msg.channel, "live for " + (
             "{}:{}:{}:{} (d:h:m:s)".format(upday, uphour, upminute, upsecond) if uptime > day else (
                 "{}:{}:{} (h:m:s)".format(uphour, upminute, upsecond) if uptime > hour else (
-                    "{}:{} (m:s)".format(upminute, upsecond) if uptime > minute else "{} seconds".format(upsecond)))))
+                    "{}:{} (m:s)".format(upminute, upsecond) if uptime > minute else (
+                        "{} seconds".format(upsecond))))))
     elif msg.content.startswith("!calc"):
         expression = msg.content[6:].lower()
         print(str(msg.content))
