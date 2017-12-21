@@ -32,12 +32,10 @@ async def on_ready():
 @client.event
 async def on_message(msg):
     if msg.content.startswith("!calc"):
-<<<<<<< HEAD
         print("%s: %s: %s" % (time.asctime(), msg.author.name, msg.content))  # Which one is better?
         result = eval(msg.content[6:])
         print(str(result))
         await client.send_message(msg.channel, str(result))
-=======
         print(time.asctime() + ": " + msg.author.name + ": " + msg.content)
         expression = msg.content[6:].lower()
         for x in expression:
@@ -51,7 +49,6 @@ async def on_message(msg):
             await client.send_message(msg.channel, str(result))
         except:
             await client.send_message(msg.channel, "Well shoot")
->>>>>>> 45d472214098b220d2922dbd21f633c54917e09f
     elif msg.content.startswith('!roll'):
         print(time.asctime() + ": " + msg.author.name + ": " + msg.content)  # Which one is better?
         print(roll(msg) + "\n")
