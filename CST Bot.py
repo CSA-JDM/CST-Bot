@@ -24,18 +24,20 @@ client = discord.Client()
 async def on_ready():
     global start
     start = time.time()
-    print("Username: %s\nID: %s\nOpened Since: %s\n" % (client.user.name, client.user.id, time.asctime()))
+    print("Username: %s\n" % client.user.name +
+          "ID: %s\n" % client.user.id +
+          "Opened Since: %s\n" % time.asctime())
 
 
 @client.event
 async def on_message(msg):
     if msg.content.startswith("!calc"):
-        print(time.asctime() + ": " + msg.author.name + ": " + msg.content)
+        print("%s: %s: %s" % (time.asctime(), msg.author.name, msg.content))  # Which one is better?
         result = eval(msg.content[6:])
         print(str(result))
         await client.send_message(msg.channel, str(result))
     elif msg.content.startswith('!roll'):
-        print(time.asctime() + ": " + msg.author.name + ": " + msg.content)
+        print(time.asctime() + ": " + msg.author.name + ": " + msg.content)  # Which one is better?
         print(roll(msg) + "\n")
         await client.send_message(msg.channel, roll(msg))
     elif msg.content.startswith("!uptime"):
@@ -159,6 +161,7 @@ def roll(msg):
         return msg.author.name + ", rolling 6 sided dice 1 time: " + str(randint(1, 6))
 
 
-token = "Mzg1OTMwMTc5NjY4ODY5MTIw.DQInkA.loqfn2gG9JK57S1HvTGAq4FqIlk"
 
-client.run(token)
+token = open("C:\\token.txt", "r")
+
+client.run(token.read())
